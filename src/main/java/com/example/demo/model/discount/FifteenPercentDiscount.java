@@ -11,7 +11,7 @@ public class FifteenPercentDiscount implements Discount {
     public static String NAME = "FifteenPercentDiscount";
 
     @Override
-    public String description() {
+    public  String description() {
         return NAME;
     }
 

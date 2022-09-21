@@ -6,6 +6,7 @@ import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptGenerator;
+import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -13,45 +14,48 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class ShopService {
 
-    private final Basket basket;
     private final ProductRepo productRepo;
     private final ReceiptGenerator receiptGenerator;
 
+    private final BasketRepo basketRepo;
+
+
     @Autowired
-    public ShopService(Basket basket, ProductRepo productRepo, ReceiptGenerator receiptGenerator) {
-        this.basket = basket;
-        this.productRepo = productRepo;
+    public ShopService(ProductRepo productRepo, ReceiptGenerator receiptGenerator,BasketRepo basketRepo) {
         this.receiptGenerator = receiptGenerator;
+        this.basketRepo = basketRepo;
+        this.productRepo = productRepo;
     }
 
 
-    public ResponseEntity<List<Product>> getProducts() {
-        return new ResponseEntity<>(basket.getProducts(), HttpStatus.OK);
-    }
-
-
-    public ResponseEntity<Receipt> getReceipt() {
-        Receipt receipt = receiptGenerator.generate(basket);
+    public ResponseEntity<Receipt> getReceipt(Long basketId) {
+        Receipt receipt = receiptGenerator.generate(basketRepo.findById(basketId).get());
+System.out.println(receipt);
         Discount.applyDiscounts(receipt);
         return new ResponseEntity<>(receipt, HttpStatus.OK);
 
     }
 
 
-    public ResponseEntity<Product> addProduct(@RequestParam(name = "name") String productName) {
-        basket.addProduct(productRepo.findByName(productName));
+    public ResponseEntity<Basket> addProduct(Long basketId, String productName) {
 
-        return new ResponseEntity<>(productRepo.findByName(productName), HttpStatus.CREATED);
+        Basket basket = basketRepo.findById(basketId).get();
+        System.out.println(basket);
+        Product product = productRepo.findByName(productName);
+
+        System.out.println(product);
+
+        basket.addProduct(product);
+        System.out.println(basket);
+
+
+        return new ResponseEntity<>(basketRepo.save(basket), HttpStatus.OK);
     }
 
 

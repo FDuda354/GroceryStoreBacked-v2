@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.basket.Basket;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.recipt.Receipt;
+import com.example.demo.model.user.AppUser;
 import com.example.demo.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +22,14 @@ public class ShopController {
         this.shopService = shopService;
     }
 
-    @GetMapping("/getProducts")
-    public ResponseEntity<List<Product>> getProducts() {
-        return shopService.getProducts();
-    }
-
     @GetMapping("/getReceipt")
-    public ResponseEntity<Receipt> getReceipt() {
-        return shopService.getReceipt();
+    public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "basketId") Long basketId) {
+        return shopService.getReceipt(basketId);
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<Product> addProduct(@RequestParam(name = "name") String productName) {
-        return shopService.addProduct(productName);
+    public ResponseEntity<Basket> addProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "name") String productName) {
+        return shopService.addProduct(basketId,productName);
     }
 
 }
