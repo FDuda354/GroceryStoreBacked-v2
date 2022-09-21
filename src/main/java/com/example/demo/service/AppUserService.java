@@ -41,12 +41,12 @@ public class AppUserService implements  UserDetailsService {
         return roleRepo.save(role);
     }
 
-//    public void addRoleToAppUser(String username, String roleName) {
-//        log.info("Adding role {} to user {}", roleName, username);
-//        AppUser appUser = userRepo.findByUsername(username);
-//        Role role = roleRepo.findByName(roleName);
-//        appUser.getRoles().add(role);
-//    }
+    public void addRoleToAppUser(String username, String roleName) {
+        log.info("Adding role {} to user {}", roleName, username);
+        AppUser appUser = userRepo.findByUsername(username);
+        Role role = roleRepo.findByName(roleName);
+        appUser.getRoles().add(role);
+    }
 
     public AppUser getAppUser(String username) {
         log.info("Fetching user {}", username);
@@ -58,7 +58,7 @@ public class AppUserService implements  UserDetailsService {
         return userRepo.findAll();
     }
 
-    //TODO: change to return plain user
+    //TODO: change to return plain user!!!
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
              AppUser user = userRepo.findByUsername(username);
@@ -68,9 +68,9 @@ public class AppUserService implements  UserDetailsService {
              } else {
                  log.info("User found in the database: {}", username);
                  Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//                 user.getRoles().forEach(role -> {
-//                     authorities.add(new SimpleGrantedAuthority(role.getName()));
-//                 });
+                 user.getRoles().forEach(role -> {
+                     authorities.add(new SimpleGrantedAuthority(role.getName()));
+                 });
                  return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true,true,true,true,authorities);
              }
     }

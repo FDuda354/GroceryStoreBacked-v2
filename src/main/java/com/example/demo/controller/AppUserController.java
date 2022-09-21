@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -40,31 +41,31 @@ public class AppUserController {
         return ResponseEntity.created(uri).body(this.appUserService.saveRole(role));
     }
 
-//    @PostMapping("/role/addtouser")
-//    public ResponseEntity<?> addRoleToAppUser(@RequestBody RoleToUserForm form){
-//        this.appUserService.addRoleToAppUser(form.getUsername(), form.getRoleName());
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/role/addtouser")
+    public ResponseEntity<?> addRoleToAppUser(@RequestBody RoleToUserForm form){
+        this.appUserService.addRoleToAppUser(form.getUsername(), form.getRoleName());
+        return ResponseEntity.ok().build();
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB()
     {
 
-        appUserService.saveRole(new Role(null, "ROLE_USER"));
-        appUserService.saveRole(new Role(null, "ROLE_MANAGER"));
-        appUserService.saveRole(new Role(null, "ROLE_ADMIN"));
-        appUserService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
+        appUserService.saveRole(new Role( "ROLE_USER"));
+        appUserService.saveRole(new Role( "ROLE_MANAGER"));
+        appUserService.saveRole(new Role( "ROLE_ADMIN"));
+        appUserService.saveRole(new Role( "ROLE_SUPER_ADMIN"));
 
-        appUserService.saveAppUser(AppUser.builder().username("john").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("johnduda99@wp.pl").build());
-        appUserService.saveAppUser(AppUser.builder().username("tom").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("tom99@wp.pl").build());
-        appUserService.saveAppUser(AppUser.builder().username("jane").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("jane99Wp.pl").build());
-        appUserService.saveAppUser(AppUser.builder().username("filip").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("filipduda99@wp.pl").build());
+        appUserService.saveAppUser(AppUser.builder().username("john").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("johnduda99@wp.pl").roles(new HashSet<>()).build());
+        appUserService.saveAppUser(AppUser.builder().username("tom").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("tom99@wp.pl").roles(new HashSet<>()).build());
+        appUserService.saveAppUser(AppUser.builder().username("jane").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("jane99Wp.pl").roles(new HashSet<>()).build());
+        appUserService.saveAppUser(AppUser.builder().username("filip").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("filipduda99@wp.pl").roles(new HashSet<>()).build());
 
-//        appUserService.addRoleToAppUser("john", "ROLE_USER");
-//        appUserService.addRoleToAppUser("tom", "ROLE_MANAGER");
-//        appUserService.addRoleToAppUser("jane", "ROLE_ADMIN");
-//        appUserService.addRoleToAppUser("filip", "ROLE_SUPER_ADMIN");
-//        appUserService.addRoleToAppUser("filip", "ROLE_ADMIN");
+        appUserService.addRoleToAppUser("john", "ROLE_USER");
+        appUserService.addRoleToAppUser("tom", "ROLE_MANAGER");
+        appUserService.addRoleToAppUser("jane", "ROLE_ADMIN");
+        appUserService.addRoleToAppUser("filip", "ROLE_SUPER_ADMIN");
+        appUserService.addRoleToAppUser("filip", "ROLE_ADMIN");
 
 
     }

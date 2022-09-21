@@ -22,9 +22,7 @@ public class ShopService {
 
     private final ProductRepo productRepo;
     private final ReceiptGenerator receiptGenerator;
-
     private final BasketRepo basketRepo;
-
 
     @Autowired
     public ShopService(ProductRepo productRepo, ReceiptGenerator receiptGenerator,BasketRepo basketRepo) {
@@ -36,25 +34,14 @@ public class ShopService {
 
     public ResponseEntity<Receipt> getReceipt(Long basketId) {
         Receipt receipt = receiptGenerator.generate(basketRepo.findById(basketId).get());
-System.out.println(receipt);
         Discount.applyDiscounts(receipt);
         return new ResponseEntity<>(receipt, HttpStatus.OK);
-
     }
 
-
     public ResponseEntity<Basket> addProduct(Long basketId, String productName) {
-
         Basket basket = basketRepo.findById(basketId).get();
-        System.out.println(basket);
         Product product = productRepo.findByName(productName);
-
-        System.out.println(product);
-
         basket.addProduct(product);
-        System.out.println(basket);
-
-
         return new ResponseEntity<>(basketRepo.save(basket), HttpStatus.OK);
     }
 

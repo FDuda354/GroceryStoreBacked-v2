@@ -5,6 +5,8 @@ import com.example.demo.model.basket.Basket;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +32,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="USERS")
-public class AppUser //implements UserDetails
+public class AppUser implements UserDetails
 {
     @Id
     @GeneratedValue(strategy = AUTO)
@@ -48,23 +50,23 @@ public class AppUser //implements UserDetails
     @Column(name="email")
     private String email;
 
-//    @ManyToMany(fetch = EAGER)
-//    @JoinTable(name="ROLES_USERS",
-//            joinColumns = @JoinColumn(name="user_id"),
-//            inverseJoinColumns = @JoinColumn(name="role_id"))
-//    @Column(name="roles")
-//    @NonNull
-  //  private Collection<Role> roles = new ArrayList<>();
 
      @ManyToOne(fetch = EAGER, cascade = CascadeType.ALL)
         @JoinColumn(name = "basket_id")
     private Basket basket=new Basket();
 
 
-//    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singleton(new SimpleGrantedAuthority(roles.toString()));    }
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(name="USERS_ROLES",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id"))
+    @Column(name="ROLES")
+    private Set<Role> roles = new HashSet<>();
+
+    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(roles.toString()));    }
 
     @Column(name="accountNonExpired")
     private  boolean accountNonExpired;
@@ -94,9 +96,9 @@ public class AppUser //implements UserDetails
         return email;
     }
 
-//    public Collection<Role> getRoles() {
-//        return roles;
-//    }
+    public Set<Role> getRoles() {
+        return roles;
+    }
 
     public boolean isAccountNonExpired() {
         return true;
@@ -118,7 +120,7 @@ public class AppUser //implements UserDetails
         return basket;
     }
 
-
+    //TODO: change to this role
     //    @NonNull
 //    @Column(name="roles")
 //    @Enumerated(EnumType.STRING)
