@@ -1,27 +1,25 @@
-package com.example.demo.controllerTest;
+package com.example.demo.controller;
 
-import com.example.demo.controller.ShopController;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptGenerator;
+import com.example.demo.service.AppUserService;
 import com.example.demo.service.ShopService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,21 +31,24 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ShopController.class)
-public class ControllerTest {
+public class ShopControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-
+    private final MockMvc mockMvc;
+    private final ObjectMapper mapper;
     @MockBean
     private ShopService shopService;
 
     @MockBean
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    ObjectMapper mapper;
+    @MockBean
+    private AppUserService appUserService;
 
+    @Autowired
+    public ShopControllerTest(MockMvc mockMvc, ObjectMapper mapper) {
+        this.mockMvc = mockMvc;
+        this.mapper = mapper;
+    }
 
     @Test
     public void shouldGetReceipt() throws Exception {
@@ -61,15 +62,15 @@ public class ControllerTest {
         basket.addProduct( new Product(12L,"Bread", ProductType.GRAINS, new BigDecimal(5)));
         var receiptGenerator = new ReceiptGenerator();
         var receipt = receiptGenerator.generate(basket);
-        given(shopService.getReceipt(any(Long.class))).willReturn(new ResponseEntity<>(receipt, HttpStatus.FOUND));
+        given(shopService.getReceipt(any(Long.class))).willReturn(receipt);
 
         //When
-        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("/shop/getReceipt")
+        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("/shop/receipt")
                         .param("basketId", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isFound())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString(), Receipt.class);
 
 
@@ -93,10 +94,10 @@ public class ControllerTest {
         var basket = new Basket(2L,new ArrayList<>(),"user");
         var product = new Product(1L,"Apple", ProductType.FRUITS, new BigDecimal(2));
         basket.addProduct(product);
-        given(shopService.addProduct(any(Long.class),any(String.class))).willReturn(new ResponseEntity<>(basket, HttpStatus.CREATED));
+        given(shopService.addProduct(any(Long.class),any(String.class))).willReturn(basket);
 
         //When
-        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/shop/addProduct")
+        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/shop/product")
                         .param("basketId", "2")
                         .param("name", "Apple")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -8,6 +8,7 @@ import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptGenerator;
 import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -15,9 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Service
+@Transactional
+@Slf4j
 public class ShopService {
 
     private final ProductRepo productRepo;
@@ -32,17 +36,17 @@ public class ShopService {
     }
 
 
-    public ResponseEntity<Receipt> getReceipt(Long basketId) {
+    public Receipt getReceipt(Long basketId) {
         Receipt receipt = receiptGenerator.generate(basketRepo.findById(basketId).get());
         Discount.applyDiscounts(receipt);
-        return new ResponseEntity<>(receipt, HttpStatus.OK);
+        return receipt;
     }
 
-    public ResponseEntity<Basket> addProduct(Long basketId, String productName) {
+    public Basket addProduct(Long basketId, String productName) {
         Basket basket = basketRepo.findById(basketId).get();
         Product product = productRepo.findByName(productName);
         basket.addProduct(product);
-        return new ResponseEntity<>(basketRepo.save(basket), HttpStatus.OK);
+        return basketRepo.save(basket);
     }
 
 

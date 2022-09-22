@@ -50,11 +50,9 @@ public class AppUser implements UserDetails
     @Column(name="email")
     private String email;
 
-
      @ManyToOne(fetch = EAGER, cascade = CascadeType.ALL)
         @JoinColumn(name = "basket_id")
     private Basket basket=new Basket();
-
 
     @ManyToMany(fetch = EAGER)
     @JoinTable(name="USERS_ROLES",
@@ -62,11 +60,6 @@ public class AppUser implements UserDetails
             inverseJoinColumns = @JoinColumn(name="role_id"))
     @Column(name="ROLES")
     private Set<Role> roles = new HashSet<>();
-
-    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(roles.toString()));    }
 
     @Column(name="accountNonExpired")
     private  boolean accountNonExpired;
@@ -79,6 +72,11 @@ public class AppUser implements UserDetails
 
     @Column(name="enabled")
     private  boolean enabled;
+
+    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(roles.toString()));    }
 
     public Long getId() {
         return id;
@@ -119,17 +117,5 @@ public class AppUser implements UserDetails
     public Basket getBasket() {
         return basket;
     }
-
-    //TODO: change to this role
-    //    @NonNull
-//    @Column(name="roles")
-//    @Enumerated(EnumType.STRING)
-//    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
-//    @JsonDeserialize(using = CustomAuthorityDeserializer.class)
-//    private Set<UserRole> roles = new HashSet<>();
-////
-// @Column(name="role")
-// private String role;
-////
 
 }

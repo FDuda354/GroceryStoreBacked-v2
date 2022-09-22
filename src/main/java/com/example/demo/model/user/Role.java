@@ -13,6 +13,7 @@ import static javax.persistence.GenerationType.AUTO;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Data
+@Builder
 @Table(name="ROLES")
 public class Role {
 
