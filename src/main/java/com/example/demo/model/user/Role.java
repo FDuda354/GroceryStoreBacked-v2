@@ -8,21 +8,8 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.AUTO;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Data
-@Builder
-@Table(name="ROLES")
-public class Role {
+public enum Role {
 
-    @Id
-    @GeneratedValue(strategy = AUTO)
-    private Long id;
-
-    @Column(name="name_of_role")
-    @NonNull
-    private String name;
+    ADMIN, USER;
 
 }

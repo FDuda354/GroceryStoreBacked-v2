@@ -1,20 +1,28 @@
 package com.example.demo.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.model.user.Role;
+import com.example.demo.security.AuthRequest;
+import com.example.demo.security.AuthResponse;
 import com.example.demo.service.AppUserService;
-import lombok.Builder;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +30,7 @@ import java.util.List;
 public class AppUserController {
 
     private final AppUserService appUserService;
+
 
     @GetMapping("/all")
     public ResponseEntity<List<AppUser>>getAllAppUsers(){
@@ -46,48 +55,27 @@ public class AppUserController {
         return ResponseEntity.noContent().build();
     }
 
-
-
-    @PostMapping("/role")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/users/role").toUriString());
-        return ResponseEntity.created(uri).body(this.appUserService.saveRole(role));
-    }
-    @PostMapping("/role/toUser")
-    public ResponseEntity<?> addRoleToAppUser(@RequestBody RoleToUserForm form){
-        this.appUserService.addRoleToAppUser(form.getUsername(), form.getRoleName());
-        return ResponseEntity.ok().body(form);
+    @GetMapping("/hello")
+    public String hello(){
+        return "Hello World";
     }
 
-
-
+    @PostMapping("/login")
+    public ResponseEntity<?> getJwt(@RequestBody AuthRequest authRequest){
+         try{
+            return ResponseEntity.ok().body(appUserService.getJwt(authRequest));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB()
     {
-
-        appUserService.saveRole(new Role( "ROLE_USER"));
-        appUserService.saveRole(new Role( "ROLE_MANAGER"));
-        appUserService.saveRole(new Role( "ROLE_ADMIN"));
-
-        appUserService.saveAppUser(AppUser.builder().username("john").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("johnduda99@wp.pl").roles(new HashSet<>()).build());
-        appUserService.saveAppUser(AppUser.builder().username("tom").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("tom99@wp.pl").roles(new HashSet<>()).build());
-        appUserService.saveAppUser(AppUser.builder().username("jane").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("jane99Wp.pl").roles(new HashSet<>()).build());
-        appUserService.saveAppUser(AppUser.builder().username("filip").accountNonExpired(true).accountNonLocked(true).credentialsNonExpired(true).enabled(true).password("1234").email("filipduda99@wp.pl").roles(new HashSet<>()).build());
-
-        appUserService.addRoleToAppUser("john", "ROLE_USER");
-        appUserService.addRoleToAppUser("tom", "ROLE_MANAGER");
-        appUserService.addRoleToAppUser("jane", "ROLE_ADMIN");
-        appUserService.addRoleToAppUser("filip", "ROLE_MANAGER");
-        appUserService.addRoleToAppUser("filip", "ROLE_ADMIN");
-
+        appUserService.saveAppUser(AppUser.builder().username("john").password("1234").email("johnduda99@wp.pl").role("ROLE_"+Role.USER.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("tom").password("1234").email("tom99@wp.pl").role("ROLE_"+Role.USER.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("jane").password("1234").email("jane99Wp.pl").role("ROLE_"+Role.USER.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("filip").password("1234").email("filipduda99@wp.pl").role("ROLE_"+Role.ADMIN.name()).build());
 
     }
-}
-@Data
-@Builder
-class RoleToUserForm{
-    private String username;
-    private String roleName;
-
 }
