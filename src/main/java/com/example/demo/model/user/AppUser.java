@@ -25,7 +25,7 @@ import static javax.persistence.GenerationType.AUTO;
 @RequiredArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="USERS")
+@Table(name="APPUSERS")
 public class AppUser implements UserDetails
 {
     @Id
@@ -33,15 +33,15 @@ public class AppUser implements UserDetails
     private Long id;
 
     @NonNull
-    @Column(name="username")
+    @JoinColumn(name="username")
     private String username;
 
     @NonNull
-    @Column(name="password")
+    @JoinColumn(name="password")
     private  String password;
 
     @NonNull
-    @Column(name="email")
+    @JoinColumn(name="email")
     private String email;
 
      @ManyToOne(fetch = EAGER, cascade = CascadeType.ALL)
@@ -49,7 +49,7 @@ public class AppUser implements UserDetails
     private Basket basket=new Basket();
 
 
-    @Column(name="ROLE")
+    @JoinColumn(name="ROLE")
     private String role;
 
 //    @Column(name="accountNonExpired")

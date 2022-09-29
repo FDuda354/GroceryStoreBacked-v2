@@ -40,15 +40,16 @@ public class SecurityConfig  {
         return username -> userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
-                .antMatchers("/users/hello").hasRole(Role.ADMIN.name())
+                .antMatchers("/users/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .anyRequest().authenticated();
-        //wywolanie filtra jwtTokenFilter przed wywołaniem UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 

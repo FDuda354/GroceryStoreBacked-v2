@@ -25,8 +25,8 @@ public class Basket {
     @GeneratedValue(strategy = AUTO)
     private Long id;
 
-    @ManyToMany(fetch = EAGER)
-    @JoinTable(name="PURCHASED_PRODUCTS_BASKETS",
+    @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name="PURCHASED_PRODUCTS_BASKETST",
             joinColumns = @JoinColumn(name="basked_id"),
             inverseJoinColumns = @JoinColumn(name="product_id"))
     @Column(name="PURCHASED_PRODUCTS")
@@ -41,5 +41,9 @@ public class Basket {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
     }
 }

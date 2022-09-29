@@ -35,4 +35,10 @@ public class ShopController {
         return ResponseEntity.created(uri).body(shopService.addProduct(basketId, name));
     }
 
+    @DeleteMapping("/product")
+    public ResponseEntity<Basket> removeProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "name") String name) {
+        this.shopService.removeProduct(basketId, name);
+        return ResponseEntity.noContent().build();
+    }
+
 }

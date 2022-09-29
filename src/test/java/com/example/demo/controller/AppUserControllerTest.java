@@ -44,9 +44,7 @@ public class AppUserControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @MockBean
-    private AuthenticationManager authenticationManager;
-
-
+    private SecurityConfig securityConfig;
 
 
     @Autowired
@@ -59,35 +57,25 @@ public class AppUserControllerTest {
     public void shouldAddAppUser() throws Exception {
         //Given
         var user = AppUser.builder().id(1L).username("filip")
-                .password("1234").email("filipduda99@wp.pl").role("ROLE_ADMIN").build();
-        AuthResponse authResponse = new AuthResponse("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaWxpcCIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaXNzIjoiR3JvY2VyeVN0b3JlIn0.4AqFu-Jpf4YHBDUrp-zNfXLTUR_VCLy8uyfRIMhkPLk","filip");
+                .password("1234").email("filipduda99@wp.pl").role("ADMIN").build();
         given(appUserService.saveAppUser(any(AppUser.class))).willReturn(user);
-        given(appUserService.getJwt(any(AuthRequest.class))).willReturn(authResponse);
 
         //When
-        var myAuthResponse =mapper.readValue( mockMvc.perform(MockMvcRequestBuilders.post("/users/login")
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new AuthRequest("filip","1234"))))
+        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .content(mapper.writeValueAsString(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString(), AuthResponse.class);
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString(), AppUser.class);
 
-//        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/users")
-//                        .header("Authorization", "Bearer " + myAuthResponse.getToken())
-//                        .content(mapper.writeValueAsString(user))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        c
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(status().isCreated())
-//                .andReturn().getResponse().getContentAsString(), AppUser.class);
-//
-//        //Then
-//        assertNotNull(result);
-//        assertEquals(user.getId(), result.getId());
-//        assertEquals(user.getUsername(), result.getUsername());
-//        assertEquals(user.getPassword(), result.getPassword());
-//        assertEquals(user.getEmail(), result.getEmail());
-//        assertEquals(user.getRole(), result.getRole());
+        //Then
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        assertEquals(user.getUsername(), result.getUsername());
+        assertEquals(user.getPassword(), result.getPassword());
+        assertEquals(user.getEmail(), result.getEmail());
+        assertEquals(user.getRole(), result.getRole());
 
 
     }
