@@ -39,7 +39,6 @@ public class AppUserService {
 
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
 
 //    @Value("${secret.key}")
@@ -49,7 +48,6 @@ public class AppUserService {
         log.info("Saving new user {} to the database", appUser.getUsername());
         return userRepo.save(this.userBuilder(appUser));
     }
-
 
     public AppUser getAppUserById(Long userId) {
         log.info("Getting user with id {}", userId);
@@ -115,7 +113,6 @@ public class AppUserService {
                     .sign(algorithm);
 
             return new AuthResponse(token, appUser.getUsername());
-
 
         }catch (Exception e){
             return null;

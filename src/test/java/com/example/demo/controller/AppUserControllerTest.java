@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,6 +63,7 @@ public class AppUserControllerTest {
 
         //When
         var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaWxpcCIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaXNzIjoiR3JvY2VyeVN0b3JlIn0.4AqFu-Jpf4YHBDUrp-zNfXLTUR_VCLy8uyfRIMhkPLk")
                         .content(mapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

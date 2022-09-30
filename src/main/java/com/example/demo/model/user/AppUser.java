@@ -44,25 +44,13 @@ public class AppUser implements UserDetails
     @JoinColumn(name="email")
     private String email;
 
-     @ManyToOne(fetch = EAGER, cascade = CascadeType.ALL)
+     @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
         @JoinColumn(name = "basket_id")
     private Basket basket=new Basket();
 
 
     @JoinColumn(name="ROLE")
     private String role;
-
-//    @Column(name="accountNonExpired")
-//    private  boolean accountNonExpired;
-//
-//    @Column(name="accountNonLocked")
-//    private  boolean accountNonLocked;
-//
-//    @Column(name="credentialsNonExpired")
-//    private  boolean credentialsNonExpired;
-//
-//    @Column(name="enabled")
-//    private  boolean enabled;
 
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @Override
