@@ -79,6 +79,7 @@ public class AppUserService {
     private AppUser userBuilder(AppUser appUser) {
         appUser.setBasket(new Basket());
         appUser.getBasket().setOwner(appUser.getUsername());
+        appUser.setRole("ROLE_USER");
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         return appUser;
     }

@@ -49,6 +49,7 @@ public class SecurityConfig  {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
+                .antMatchers("/users/register").permitAll()
                 .antMatchers("/users/**").hasRole(Role.ADMIN.name())
                 .antMatchers("/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .anyRequest().authenticated();
