@@ -1,28 +1,16 @@
 package com.example.demo.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.model.user.AppUser;
-import com.example.demo.model.user.Role;
 import com.example.demo.security.AuthRequest;
-import com.example.demo.security.AuthResponse;
 import com.example.demo.service.AppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,11 +43,6 @@ public class AppUserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/hello")
-    public String hello(){
-        return "Hello World";
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> getJwt(@RequestBody AuthRequest authRequest){
          try{
@@ -68,6 +51,7 @@ public class AppUserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
 //    @EventListener(ApplicationReadyEvent.class)
 //    public void fillDB()

@@ -8,6 +8,7 @@ import com.example.demo.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,6 +22,10 @@ public class ShopController {
 
    private final ShopService shopService;
 
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok().body(shopService.getAllProducts());
+    }
     @GetMapping("/receipt")
     public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "basketId") Long basketId) {
       Receipt receipt = shopService.getReceipt(basketId);
@@ -28,6 +33,7 @@ public class ShopController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(receipt);
     }
+
 
     @PostMapping("/product")
     public ResponseEntity<Basket> addProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "name") String name) {

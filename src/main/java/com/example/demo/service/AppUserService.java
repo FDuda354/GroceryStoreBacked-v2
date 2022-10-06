@@ -112,7 +112,7 @@ public class AppUserService {
                     .withClaim("roles", appUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                     .sign(algorithm);
 
-            return new AuthResponse(token, appUser.getUsername());
+            return new AuthResponse(token, appUser.getUsername(), appUser.getId().toString(),appUser.getBasket().getId().toString());
 
         }catch (Exception e){
             return null;
