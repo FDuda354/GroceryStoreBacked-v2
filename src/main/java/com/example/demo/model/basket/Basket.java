@@ -47,6 +47,10 @@ public class Basket {
         products.remove(product);
     }
 
+    public void removeAllProducts() {
+        products.clear();
+    }
+
     public void clear() {
         products.clear();
     }

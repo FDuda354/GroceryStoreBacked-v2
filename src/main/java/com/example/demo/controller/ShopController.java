@@ -22,10 +22,6 @@ public class ShopController {
 
    private final ShopService shopService;
 
-    @GetMapping("/products")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok().body(shopService.getAllProducts());
-    }
     @GetMapping("/receipt")
     public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "basketId") Long basketId) {
       Receipt receipt = shopService.getReceipt(basketId);

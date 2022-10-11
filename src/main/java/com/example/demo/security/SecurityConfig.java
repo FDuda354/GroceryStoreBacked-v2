@@ -50,7 +50,8 @@ public class SecurityConfig  {
         http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/register").permitAll()
-                .antMatchers("/users/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/users/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .antMatchers("/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

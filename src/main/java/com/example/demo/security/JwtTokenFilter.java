@@ -23,7 +23,8 @@ import java.util.stream.Stream;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-
+    @Value("${secret.key}")
+    private String SECRET_KEY;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -41,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     public UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String auth){
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer("GroceryStore")
                 .build();

@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AppUserController.class)
@@ -63,7 +64,6 @@ public class AppUserControllerTest {
 
         //When
         var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaWxpcCIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaXNzIjoiR3JvY2VyeVN0b3JlIn0.4AqFu-Jpf4YHBDUrp-zNfXLTUR_VCLy8uyfRIMhkPLk")
                         .content(mapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

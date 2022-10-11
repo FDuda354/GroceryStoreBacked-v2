@@ -34,15 +34,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-//@Qualifier("myUserDetailsService")
 public class AppUserService {
 
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-//    @Value("${secret.key}")
-//    private String SECRET_KEY;
+    @Value("${secret.key}")
+    private String SECRET_KEY;
 
     public AppUser saveAppUser(AppUser appUser) {
         log.info("Saving new user {} to the database", appUser.getUsername());
@@ -64,17 +63,7 @@ public class AppUserService {
         return userRepo.findAll();
     }
 
-    public void deleteAppUser(Long id) {
-        if(userRepo.existsById(id)) {
-            AppUser appUser = userRepo.findById(id).get();
-            userRepo.deleteById(id);
-            log.info("User {} deleted", appUser.getUsername());
-        }
-        else {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
-        }
-    }
+
 
     private AppUser userBuilder(AppUser appUser) {
         appUser.setBasket(new Basket());
@@ -106,7 +95,7 @@ public class AppUserService {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
             AppUser appUser = (AppUser) authentication.getPrincipal();
 
-            Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
             String token = JWT.create()
                     .withIssuer("GroceryStore")
                     .withSubject(appUser.getUsername())
@@ -118,5 +107,13 @@ public class AppUserService {
         }catch (Exception e){
             return null;
         }
+    }
+
+    public void deleteAllAppUsers() {
+        List<AppUser> appUsers = userRepo.findAll();
+        appUsers.forEach(appUser -> {
+            appUser.getBasket().removeAllProducts();
+        });
+        userRepo.deleteAll();
     }
 }
