@@ -1,5 +1,14 @@
 # GroceryStore
 
+<h2>Project Stucture</h2>
+
+![alwaysdata logo](https://user-images.githubusercontent.com/92389794/195980186-7c05de94-ffe1-41ee-8bcf-35acbb6a9e52.png)
+
+https://www.alwaysdata.com
+
+![projet structure](https://user-images.githubusercontent.com/92389794/195984459-c3c2f7df-1beb-402b-bd1d-36f75ccc2481.png)
+
+
 Main project: store management.
 Technology i used:
 - Spring jpa
@@ -102,10 +111,11 @@ The REST API is olso hosted on the AlwaysData server
 
 ![alwaysdata logo](https://user-images.githubusercontent.com/92389794/195980186-7c05de94-ffe1-41ee-8bcf-35acbb6a9e52.png)
 
+https://www.alwaysdata.com
+
 <h3>JWT</h3>
 
 Each user who logs in will get a token using the getJWT method which assigns him the appropriate role and encrypts it with the HMAC256 algorithm. 
 Each HTTP query goes through the JWT filter class. which checks if the header contains "Authorization" and is not null.
 Then it reads the permissions that can be found in the Authorization header
-
 
