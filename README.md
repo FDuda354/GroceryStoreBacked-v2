@@ -1,5 +1,8 @@
 # GroceryStore
 
+<h2> You can try it on docker </h2>
+docker run -d -it -p 8081:80/tcp --name grocery-store-frontend needxmafia/grocery-store-frontend:latest
+
 <h2>Project Stucture</h2>
 
 ![alwaysdata logo](https://user-images.githubusercontent.com/92389794/195980186-7c05de94-ffe1-41ee-8bcf-35acbb6a9e52.png)
