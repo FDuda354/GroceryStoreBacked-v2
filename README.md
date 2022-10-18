@@ -1,4 +1,4 @@
-# GroceryStore
+# GroceryStoreBacked
 
 <h2> You can try it on docker </h2>
 docker run -d -it -p 8081:80/tcp --name grocery-store-frontend needxmafia/grocery-store-frontend:latest
