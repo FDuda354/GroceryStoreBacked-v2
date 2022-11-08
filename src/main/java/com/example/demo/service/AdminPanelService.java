@@ -30,6 +30,7 @@ public class AdminPanelService {
     }
 
     public Product addProductToDB(Product product) {
+        System.out.println(product);
        return productRepo.save(product);
     }
 

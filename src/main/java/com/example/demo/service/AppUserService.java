@@ -79,6 +79,7 @@ public class AppUserService {
             AppUser appUser1 = userRepo.findById(appUser.getId()).get();
             appUser1.setUsername(appUser.getUsername());
             appUser1.setPassword(passwordEncoder.encode(appUser.getPassword()));
+            appUser1.setEmail(appUser.getEmail());
             appUser1.setBasket(appUser.getBasket());
             appUser1.getBasket().setOwner(appUser.getUsername());
             log.info("User {} updated", appUser.getUsername());
