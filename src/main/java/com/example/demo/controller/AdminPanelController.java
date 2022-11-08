@@ -23,8 +23,7 @@ public class AdminPanelController {
     }
 
     @PostMapping("/product")
-    public Product addProductToDB(@RequestBody Product product)
-    {
+    public Product addProductToDB(@RequestBody Product product) {
         return adminPanelService.addProductToDB(product);
     }
 
