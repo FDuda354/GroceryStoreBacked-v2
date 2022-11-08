@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@CrossOrigin(origins = "https://grocerystore-fduda354.koyeb.app/api")
 public class AppUserController {
 
     private final AppUserService appUserService;

@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
+@CrossOrigin(origins = "https://grocerystore-fduda354.koyeb.app/api")
 public class AdminPanelController {
 
     private final AdminPanelService adminPanelService;
