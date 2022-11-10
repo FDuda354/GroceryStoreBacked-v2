@@ -47,13 +47,13 @@ public class AppUserController {
     }
 
 
-//    @EventListener(ApplicationReadyEvent.class)
-//    public void fillDB()
-//    {
-//        appUserService.saveAppUser(AppUser.builder().username("john").password("1234").email("johnduda99@wp.pl").role("ROLE_"+ Role.USER.name()).build());
-//        appUserService.saveAppUser(AppUser.builder().username("tom").password("1234").email("tom99@wp.pl").role("ROLE_"+Role.USER.name()).build());
-//        appUserService.saveAppUser(AppUser.builder().username("jane").password("1234").email("jane99Wp.pl").role("ROLE_"+Role.USER.name()).build());
-//        appUserService.saveAppUser(AppUser.builder().username("filip").password("1234").email("filipduda99@wp.pl").role("ROLE_"+Role.ADMIN.name()).build());
-//
-//    }
+    @EventListener(ApplicationReadyEvent.class)
+    public void fillDB()
+    {
+        appUserService.saveAppUser(AppUser.builder().username("john").password("1234").email("johnduda99@wp.pl").role("ROLE_"+ Role.USER.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("tom").password("1234").email("tom99@wp.pl").role("ROLE_"+Role.USER.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("pawel").password("1234").email("jane99Wp.pl").role("ROLE_"+Role.ADMIN.name()).build());
+        appUserService.saveAppUser(AppUser.builder().username("filip").password("1234").email("filipduda99@wp.pl").role("ROLE_"+Role.ADMIN.name()).build());
+
+    }
 }
