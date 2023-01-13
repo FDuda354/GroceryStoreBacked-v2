@@ -1,9 +1,7 @@
 package com.example.demo.model.recipt;
 
 import com.example.demo.model.product.Product;
-import lombok.Data;
 
-import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 

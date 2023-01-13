@@ -1,53 +1,57 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.BasketNotFoundInDBException;
+import com.example.demo.exception.ProductNotFoundInBasketException;
 import com.example.demo.model.basket.Basket;
-import com.example.demo.model.product.Product;
 import com.example.demo.model.recipt.Receipt;
-import com.example.demo.model.user.AppUser;
 import com.example.demo.service.ShopService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
-@RequestMapping("/shop")
+@RequestMapping("/api/shop")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://grocerystore-fduda354.koyeb.app/api")
 public class ShopController {
 
-   private final ShopService shopService;
+    private final ShopService shopService;
 
     @GetMapping("/receipt")
     public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "basketId") Long basketId) {
-      Receipt receipt = shopService.getReceipt(basketId);
-      if (receipt == null)
+        try {
+            return ResponseEntity.ok().body(shopService.getReceipt(basketId));
+        } catch (BasketNotFoundInDBException e) {
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(receipt);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-
 
     @PostMapping("/product")
     public ResponseEntity<Basket> addProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "name") String name) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/shop/product").toUriString());
-        Basket basket = shopService.addProduct(basketId, name);
-        if (basket == null)
+        try {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/shop/product").toUriString());
+            return ResponseEntity.created(uri).body(shopService.addProduct(basketId, name));
+        } catch (BasketNotFoundInDBException | ProductNotFoundInBasketException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.created(uri).body(basket);
+        }
     }
 
     @PostMapping("/basket")
-    public ResponseEntity<Basket> removeProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "name") String name) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/shop/product").toUriString());
-        Basket basket = shopService.removeProduct(basketId, name);
-        if (basket == null)
+    public ResponseEntity<Basket> removeProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "productName") String productName) {
+        try {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/shop/basket").toUriString());
+            return ResponseEntity.created(uri).body(shopService.removeProduct(basketId, productName));
+        } catch (ProductNotFoundInBasketException e) {
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().body(basket);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

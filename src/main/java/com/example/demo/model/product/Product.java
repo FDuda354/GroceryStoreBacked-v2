@@ -9,22 +9,21 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Builder
 @Data
-@Table(name = "PRODUCTS_DB")
-public class Product{
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        Long id;
-        @Column(name="name")
-        @NonNull
-       String name;
-        @Column(name="type")
-        @NonNull
-        ProductType type;
-        @Column(name="price")
-        @NonNull
-        BigDecimal price;
+@Table(name = "products_db")
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
+    @NonNull
+    String name;
 
+    @NonNull
+    ProductType type;
+
+    @NonNull
+    BigDecimal price;
 
 }

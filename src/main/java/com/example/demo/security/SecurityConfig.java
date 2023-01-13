@@ -21,7 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig  {
+public class SecurityConfig {
 
     private final UserRepo userRepo;
     private final JwtTokenFilter jwtTokenFilter;
@@ -48,13 +48,14 @@ public class SecurityConfig  {
         http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/users/login").permitAll()
-                .antMatchers("/users/register").permitAll()
-                .antMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/users/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                .antMatchers("/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                .anyRequest().authenticated();
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/api/users/login").permitAll()
+                .antMatchers("/api/users/register").permitAll()
+                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/users/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                .antMatchers("/api/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }

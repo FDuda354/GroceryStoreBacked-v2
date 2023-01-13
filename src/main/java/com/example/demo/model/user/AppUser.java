@@ -11,7 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.AUTO;
@@ -25,37 +27,27 @@ import static javax.persistence.GenerationType.AUTO;
 @RequiredArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name="APPUSERS")
-public class AppUser implements UserDetails
-{
+@Table(name = "users")
+public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = AUTO)
     private Long id;
-
     @NonNull
-    @JoinColumn(name="username")
     private String username;
-
     @NonNull
-    @JoinColumn(name="password")
-    private  String password;
-
+    private String password;
     @NonNull
-    @JoinColumn(name="email")
     private String email;
-
-     @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
-        @JoinColumn(name = "basket_id")
-    private Basket basket=new Basket();
-
-
-    @JoinColumn(name="ROLE")
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "basket_id")
+    private Basket basket = new Basket();
     private String role;
 
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));    }
+        return Collections.singleton(new SimpleGrantedAuthority(role));
+    }
 
     public Long getId() {
         return id;
@@ -94,7 +86,7 @@ public class AppUser implements UserDetails
     }
 
     public Basket getBasket() {
-        return basket;
+        return this.basket;
     }
 
     @Override

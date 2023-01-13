@@ -1,38 +1,38 @@
 package com.example.demo.model.basket;
 
 import com.example.demo.model.product.Product;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data
 @NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "BASKETS")
-@Component
+@Table(name = "baskets")
 public class Basket {
 
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name="PURCHASED_PRODUCTS_BASKETST",
-            joinColumns = @JoinColumn(name="basked_id"),
-            inverseJoinColumns = @JoinColumn(name="product_id"))
-    @Column(name="PURCHASED_PRODUCTS")
-    private List<Product> products = new ArrayList<>();
+    @JoinTable(name = "purchased_products_baskets",
+            joinColumns = @JoinColumn(name = "basked_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "purchased_products")
+    private List<Product> products = new LinkedList<>();
 
-    @Column(name="owner")
+    @NonNull
     private String owner;
 
     public void addProduct(Product product) {
@@ -51,7 +51,4 @@ public class Basket {
         products.clear();
     }
 
-    public void clear() {
-        products.clear();
-    }
 }

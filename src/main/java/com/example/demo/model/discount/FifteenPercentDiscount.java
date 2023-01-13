@@ -1,6 +1,5 @@
 package com.example.demo.model.discount;
 
-import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;
 import com.example.demo.model.recipt.Receipt;
 
@@ -11,7 +10,7 @@ public class FifteenPercentDiscount implements Discount {
     public static String NAME = "FifteenPercentDiscount";
 
     @Override
-    public  String description() {
+    public String description() {
         return NAME;
     }
 
@@ -31,15 +30,14 @@ public class FifteenPercentDiscount implements Discount {
     @Override
     public boolean shouldApply(Receipt receipt) {
 
-       int count = 0;
+        int count = 0;
 
-         for (var entry : receipt.getEntries()) {
-              if (entry.product().getType().equals(ProductType.GRAINS)) {
-                    count += entry.quantity();
-              }
-
-         }
-         return count >= 3;
+        for (var entry : receipt.getEntries()) {
+            if (entry.product().getType().equals(ProductType.GRAINS)) {
+                count += entry.quantity();
+            }
+        }
+        return count >= 3;
     }
 }
 

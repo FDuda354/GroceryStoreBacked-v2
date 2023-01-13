@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class ReceiptGenerator {
@@ -17,19 +19,11 @@ public class ReceiptGenerator {
         List<String> discounts = new ArrayList<>();
         List<ReceiptEntry> receiptEntries = new ArrayList<>();
 
-        HashMap<Product, Integer> products = new HashMap<>();
+        basket.getProducts().stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .forEach((product, count) -> receiptEntries.add(new ReceiptEntry(product, count.intValue())));
 
-        for (Product product : basket.getProducts()) {
-            products.merge(product, 1, Integer::sum);
-        }
-
-        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            receiptEntries.add(new ReceiptEntry(entry.getKey(), entry.getValue()));
-        }
-
-
-
-        return new Receipt(receiptEntries,discounts);
+        return new Receipt(receiptEntries, discounts);
     }
 
 }

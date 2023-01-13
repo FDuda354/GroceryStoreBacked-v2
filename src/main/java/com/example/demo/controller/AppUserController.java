@@ -1,51 +1,82 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.UserAlreadyExistException;
+import com.example.demo.exception.UserNotFoundInDBException;
 import com.example.demo.model.user.AppUser;
-import com.example.demo.model.user.Role;
 import com.example.demo.security.AuthRequest;
+import com.example.demo.security.AuthResponse;
 import com.example.demo.service.AppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
-@CrossOrigin(origins = "https://grocerystore-fduda354.koyeb.app/api")
+@RequestMapping("/api/users")
 public class AppUserController {
 
     private final AppUserService appUserService;
 
     @GetMapping
-    public ResponseEntity<AppUser> getAppUserById(@RequestParam(name = "id") Long id){
-        return ResponseEntity.status(302).body(appUserService.getAppUserById(id));
-    }
-    @PostMapping("/register")
-    public ResponseEntity<AppUser> saveAppUser(@RequestBody AppUser appUser){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/users").toUriString());
-        return ResponseEntity.created(uri).body(this.appUserService.saveAppUser(appUser));
-    }
-    @PutMapping
-    public ResponseEntity<AppUser> updateAppUser(@RequestBody AppUser appUser){
-        return ResponseEntity.accepted().body(this.appUserService.updateAppUser(appUser));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> getJwt(@RequestBody AuthRequest authRequest){
-         try{
-            return ResponseEntity.ok().body(appUserService.getJwt(authRequest));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<AppUser> getAppUserById(@RequestParam(name = "id") Long id) {
+        try {
+            return ResponseEntity.status(302).body(appUserService.getAppUserById(id));
+        } catch (UserNotFoundInDBException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<AppUser> saveAppUser(@RequestBody AppUser appUser) {
+        try {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/register").toUriString());
+            return ResponseEntity.created(uri).body(appUserService.saveAppUser(appUser));
+        } catch (UserAlreadyExistException e) {
+            return ResponseEntity.status(409).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<AppUser> updateAppUser(@RequestBody AppUser appUser) {
+        try {
+            return ResponseEntity.status(302).body(appUserService.updateAppUser(appUser));
+        } catch (UserNotFoundInDBException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAppUser(@RequestParam(name = "id") Long id) {
+        try {
+            appUserService.deleteAppUser(id);
+            return ResponseEntity.ok().build();
+        } catch (UserNotFoundInDBException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> getJwt(@RequestBody AuthRequest authRequest) {
+        try {
+            return ResponseEntity.ok().body(appUserService.getJwt(authRequest));
+        } catch (UserNotFoundInDBException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 }
