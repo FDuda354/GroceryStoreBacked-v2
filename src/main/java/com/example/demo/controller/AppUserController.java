@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.UserAlreadyExistException;
 import com.example.demo.exception.UserNotFoundInDBException;
-import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.security.AuthRequest;
 import com.example.demo.security.AuthResponse;

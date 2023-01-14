@@ -11,13 +11,11 @@ import com.example.demo.model.recipt.ReceiptGenerator;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
-import com.example.demo.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 
 @Service
 @Transactional

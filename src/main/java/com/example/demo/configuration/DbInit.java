@@ -1,8 +1,6 @@
 package com.example.demo.configuration;
 
 import com.example.demo.model.basket.Basket;
-import com.example.demo.model.payments.AppTransaction;
-import com.example.demo.model.payments.TransactionDirection;
 import com.example.demo.model.payments.Wallet;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;

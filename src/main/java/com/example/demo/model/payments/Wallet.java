@@ -1,12 +1,11 @@
 package com.example.demo.model.payments;
 
 import com.example.demo.exception.OutOfMoneyException;
-import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
