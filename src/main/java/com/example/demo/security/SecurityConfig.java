@@ -50,6 +50,7 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/api/users/login").permitAll()
                 .antMatchers("/api/users/register").permitAll()
+                .antMatchers("/api/users/confirm").permitAll()
                 .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers("/api/users/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .antMatchers("/api/shop/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())

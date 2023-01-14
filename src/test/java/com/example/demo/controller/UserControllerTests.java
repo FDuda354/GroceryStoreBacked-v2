@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -57,7 +59,7 @@ public class UserControllerTests {
         //Given
         var user = AppUser.builder().id(1L).username("filip")
                 .password("1234").email("filipduda99@wp.pl").role(Role.ADMIN.name()).build();
-        given(appUserService.saveAppUser(any(AppUser.class))).willReturn(user);
+        given(appUserService.register(any(AppUser.class),any(HttpServletRequest.class))).willReturn(user);
 
         //When
         var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/users/register")
