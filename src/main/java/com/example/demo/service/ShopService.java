@@ -4,18 +4,20 @@ import com.example.demo.exception.BasketNotFoundInDBException;
 import com.example.demo.exception.ProductNotFoundInBasketException;
 import com.example.demo.exception.ProductNotFoundInDBException;
 import com.example.demo.model.basket.Basket;
-import com.example.demo.model.discount.Discount;
+import com.example.demo.model.payments.discount.Discount;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptGenerator;
+import com.example.demo.model.user.AppUser;
 import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
+import com.example.demo.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 
 @Service
 @Transactional
@@ -26,18 +28,16 @@ public class ShopService {
     private final ProductRepo productRepo;
     private final ReceiptGenerator receiptGenerator;
     private final BasketRepo basketRepo;
+    private final AppUserService appUserService;
 
-
-    public Receipt getReceipt(Long basketId) throws Exception {
+    public Receipt getReceipt(Long userId) throws Exception {
         try {
-            Basket basket = basketRepo.findById(basketId).orElseThrow(() -> {
-                log.error("Basket with id {} not found", basketId);
-                return new BasketNotFoundInDBException("Basket with id " + basketId + " not found");
-            });
+
+            AppUser user = appUserService.getAppUserById(userId);
+            Basket basket = user.getBasket();
             Receipt receipt = receiptGenerator.generate(basket);
             Discount.applyDiscounts(receipt);
-            basket.removeAllProducts();
-            basketRepo.save(basket);
+            appUserService.payForProducts(receipt, user.getWallet(),basket);
             return receipt;
         } catch (Exception e) {
             log.error("Error while generating receipt", e);
@@ -89,6 +89,10 @@ public class ShopService {
         }
     }
 
+    public Basket clearBasket(Basket basket) {
+        basket.removeAllProducts();
+       return basketRepo.save(basket);
+    }
     public void reset() {
         basketRepo.deleteAll();
     }

@@ -20,9 +20,9 @@ public class ShopController {
     private final ShopService shopService;
 
     @GetMapping("/receipt")
-    public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "basketId") Long basketId) {
+    public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "userId") Long userId) {
         try {
-            return ResponseEntity.ok().body(shopService.getReceipt(basketId));
+            return ResponseEntity.ok().body(shopService.getReceipt(userId));
         } catch (BasketNotFoundInDBException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

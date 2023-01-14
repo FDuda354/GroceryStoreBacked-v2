@@ -2,12 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.UserAlreadyExistException;
 import com.example.demo.exception.UserNotFoundInDBException;
+import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.security.AuthRequest;
 import com.example.demo.security.AuthResponse;
 import com.example.demo.service.AppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

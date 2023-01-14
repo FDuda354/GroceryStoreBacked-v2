@@ -2,16 +2,12 @@ package com.example.demo.model.basket;
 
 import com.example.demo.model.product.Product;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.GenerationType.AUTO;
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data

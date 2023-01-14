@@ -1,11 +1,15 @@
 package com.example.demo.model.recipt;
 
+import com.example.demo.model.product.Product;
+import com.example.demo.model.product.ProductType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Data
@@ -28,6 +32,15 @@ public class Receipt {
         this.discounts = discounts;
         this.totalPrice = totalPrice;
         this.date = LocalDate.now();
+    }
+
+    public String getTypeOfProduct() {
+        return entries.stream()
+                .map(ReceiptEntry::product)
+                .map(Product::getType)
+                .map(ProductType::name)
+                .distinct()
+                .collect(Collectors.joining(", "));
     }
 
 }

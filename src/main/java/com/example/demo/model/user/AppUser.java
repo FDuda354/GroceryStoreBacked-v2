@@ -2,6 +2,7 @@ package com.example.demo.model.user;
 
 import com.example.demo.configuration.CustomAuthorityDeserializer;
 import com.example.demo.model.basket.Basket;
+import com.example.demo.model.payments.Wallet;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -40,13 +41,21 @@ public class AppUser implements UserDetails {
     private String email;
     @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "basket_id")
-    private Basket basket = new Basket();
+    private Basket basket;
+
+    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
     private String role;
 
     @JsonDeserialize(using = CustomAuthorityDeserializer.class)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role));
+    }
+
+    public Wallet getWallet() {
+        return wallet;
     }
 
     public Long getId() {

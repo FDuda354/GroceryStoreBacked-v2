@@ -21,6 +21,7 @@ public class Product {
     String name;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     ProductType type;
 
     @NonNull

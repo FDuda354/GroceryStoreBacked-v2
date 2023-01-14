@@ -1,4 +1,4 @@
-package com.example.demo.model.discount;
+package com.example.demo.model.payments.discount;
 
 import com.example.demo.model.recipt.Receipt;
 

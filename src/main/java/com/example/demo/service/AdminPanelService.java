@@ -36,6 +36,7 @@ public class AdminPanelService {
             productRepo.deleteAll();
             shopService.reset();
             dbInit.fillDB();
+
         } catch (Exception e) {
             log.error("Error while resetting database: " + e.getMessage());
             throw new Exception("Error while resetting database: " + e.getMessage());

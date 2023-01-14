@@ -2,8 +2,11 @@ package com.example.demo.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.demo.exception.OutOfMoneyException;
 import com.example.demo.exception.UserAlreadyExistException;
 import com.example.demo.model.basket.Basket;
+import com.example.demo.model.payments.Wallet;
+import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.model.user.Role;
 import com.example.demo.repository.UserRepo;
@@ -14,16 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,6 +136,18 @@ public class AppUserService {
         } catch (Exception e) {
             log.error("Error while deleting user: " + e.getMessage());
             throw new Exception("Error while deleting user: " + e.getMessage());
+        }
+    }
+
+    @Transactional(rollbackFor = OutOfMoneyException.class)
+    public Receipt payForProducts(Receipt receipt, Wallet wallet,Basket basket) throws Exception {
+        try{
+            wallet.removeMoney(receipt.getTotalPrice(), receipt.getTypeOfProduct());
+            basket.removeAllProducts();
+            return receipt;
+        } catch (Exception e) {
+            log.error("Error while paying for product: " + e.getMessage());
+            throw new Exception("Error while paying for product: " + e.getMessage());
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.demo.discount;
 
-import com.example.demo.model.discount.TenPercentDiscount;
+import com.example.demo.model.payments.discount.TenPercentDiscount;
 import com.example.demo.model.product.ProductDb;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptEntry;

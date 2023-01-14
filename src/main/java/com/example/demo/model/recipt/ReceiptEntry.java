@@ -14,4 +14,5 @@ public record ReceiptEntry(
     public ReceiptEntry(Product product, int quantity) {
         this(product, quantity, product.getPrice().multiply(BigDecimal.valueOf(quantity)));
     }
+
 }
