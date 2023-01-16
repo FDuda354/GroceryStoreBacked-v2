@@ -3,8 +3,8 @@
 
 INSERT INTO wallets(id, balance,owner)
 VALUES
-(1,1000, 'filip'),
-(2,1000,'patryk'),
+(1,1000000, 'filip'),
+(2,100,'patryk'),
 (3,1000,'kamil'),
 (4,1000,'ania'),
 (5,1000,'tomasz'),
@@ -15,4 +15,4 @@ VALUES
 (10,1000,'krzysztof'),
 (11,1000,'marcin'),
 (12,1000,'ewa'),
-(13,1000,'pawel');
+(13,10000,'pawel');

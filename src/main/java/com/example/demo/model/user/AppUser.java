@@ -39,7 +39,7 @@ public class AppUser implements UserDetails {
     @NonNull
     private String email;
     private boolean isEnable;
-    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "basket_id")
     private Basket basket;
 

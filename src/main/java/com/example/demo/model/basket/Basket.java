@@ -1,11 +1,12 @@
 package com.example.demo.model.basket;
 
 import com.example.demo.model.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.EAGER;
 
@@ -21,30 +22,69 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "purchased_products_baskets",
-            joinColumns = @JoinColumn(name = "basket_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "purchased_products")
-    private List<Product> products = new LinkedList<>();
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.PERSIST, fetch = EAGER)
+    @NonNull
+    private List<BasketProduct> basketProducts;
 
     @NonNull
     private String owner;
 
-    public void addProduct(Product product) {
-        products.add(product);
+
+    public BasketProduct addProduct(Product product) {
+        BasketProduct basketProduct = basketProducts.stream()
+                .filter(bp -> bp.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+
+        if (basketProduct != null) {
+            basketProduct.setQuantity(basketProduct.getQuantity() + 1L);
+        } else {
+            basketProduct = new BasketProduct( this,product, 1L);
+            basketProducts.add(basketProduct);
+
+        }
+        return basketProduct;
     }
 
+    @JsonIgnore
     public List<Product> getProducts() {
-        return products;
+        return basketProducts.stream()
+                .map(BasketProduct::getProduct)
+                .collect(Collectors.toList());
     }
+
 
     public void removeProduct(Product product) {
-        products.remove(product);
+        basketProducts.removeIf(bp -> bp.getProduct().equals(product));
     }
 
+
     public void removeAllProducts() {
-        products.clear();
+        basketProducts.clear();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<BasketProduct> getBasketProducts() {
+        return basketProducts;
+    }
+
+    public void setBasketProducts(List<BasketProduct> basketProducts) {
+        this.basketProducts = basketProducts;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
 }

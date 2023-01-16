@@ -8,10 +8,10 @@ import java.math.BigDecimal;
 public record ReceiptEntry(
 
         Product product,
-        int quantity,
+        Long quantity,
         BigDecimal totalPrice) {
 
-    public ReceiptEntry(Product product, int quantity) {
+    public ReceiptEntry(Product product, Long quantity) {
         this(product, quantity, product.getPrice().multiply(BigDecimal.valueOf(quantity)));
     }
 

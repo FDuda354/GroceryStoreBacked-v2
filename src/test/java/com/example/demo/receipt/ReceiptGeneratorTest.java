@@ -1,11 +1,14 @@
 package com.example.demo.receipt;
 
 import com.example.demo.model.basket.Basket;
+import com.example.demo.model.basket.BasketProduct;
 import com.example.demo.model.product.ProductDb;
 import com.example.demo.model.recipt.ReceiptGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,6 +20,8 @@ class ReceiptGeneratorTest {
         // Given
         var productDb = new ProductDb();
         var cart = new Basket();
+        var basketProducts = new LinkedList<BasketProduct>();
+        cart.setBasketProducts(basketProducts);
         var milk = productDb.getProduct("Milk");
         var bread = productDb.getProduct("Bread");
         var apple = productDb.getProduct("Apple");

@@ -55,7 +55,7 @@ public class DbInit {
                 .password(passwordEncoder.encode("1234"))
                 .email("filipduda9@wp.pl")
                 .role("ROLE_"+ Role.ADMIN)
-                .basket(new Basket("filip"))
+                .basket(new Basket( new ArrayList<>(),"filip"))
                 .wallet(Wallet.builder()
                         .balance(new BigDecimal(500))
                         .owner("filip")
@@ -68,7 +68,26 @@ public class DbInit {
         user.getWallet().addMoney(new BigDecimal(100),"Third money");
         user.getWallet().removeMoney(new BigDecimal(100),"pay for apple");
 
+        AppUser user2 = AppUser.builder()
+                .username("filip")
+                .password(passwordEncoder.encode("1234"))
+                .email("filipduda9@wp.pl")
+                .role("ROLE_"+ Role.ADMIN)
+                .basket(new Basket( new ArrayList<>(),"filip"))
+                .wallet(Wallet.builder()
+                        .balance(new BigDecimal(500))
+                        .owner("filip")
+                        .transactions(new ArrayList<>())
+                        .build())
+                .build();
+
+        user2.getWallet().addMoney(new BigDecimal(100),"First money");
+        user2.getWallet().addMoney(new BigDecimal(100),"Second money");
+        user2.getWallet().addMoney(new BigDecimal(100),"Third money");
+        user2.getWallet().removeMoney(new BigDecimal(100),"pay for apple");
+
         userRepo.save(user);
+        userRepo.save(user2);
 
     }
 

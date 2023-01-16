@@ -2,6 +2,7 @@ package com.example.demo.model.recipt;
 
 import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +34,7 @@ public class Receipt {
         this.date = LocalDate.now();
     }
 
+    @JsonIgnore
     public String getTypeOfProduct() {
         return entries.stream()
                 .map(ReceiptEntry::product)

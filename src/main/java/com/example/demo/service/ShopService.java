@@ -10,13 +10,13 @@ import com.example.demo.model.product.Product;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.model.recipt.ReceiptGenerator;
 import com.example.demo.model.user.AppUser;
+import com.example.demo.repository.BasketProductRepo;
 import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -27,6 +27,7 @@ public class ShopService {
     private final ProductRepo productRepo;
     private final ReceiptGenerator receiptGenerator;
     private final BasketRepo basketRepo;
+    private final BasketProductRepo basketProductRepo;
     private final AppUserService appUserService;
 
     public Receipt getReceipt(Long userId) throws Exception {
@@ -36,6 +37,7 @@ public class ShopService {
             Receipt receipt = receiptGenerator.generate(basket);
             Discount.applyDiscounts(receipt);
             appUserService.payForProducts(receipt, user.getWallet(), basket);
+            basketProductRepo.removeByBasketId(basket.getId());
             return receipt;
         } catch (OutOfMoneyException e) {
             log.error("User don't have enough money to pay for products");
@@ -56,8 +58,9 @@ public class ShopService {
             throw new ProductNotFoundInDBException("Product with name " + productName + " not found");
         });
         try {
-            basket.addProduct(product);
-            return basketRepo.save(basket);
+            basketProductRepo.save(basket.addProduct(product));
+            basketRepo.save(basket);
+            return basket;
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new Exception(e.getMessage());
@@ -65,6 +68,7 @@ public class ShopService {
 
     }
 
+    @Transactional(rollbackFor = ProductNotFoundInBasketException.class)
     public Basket removeProduct(Long basketId, String productName) {
         Basket basket = basketRepo.findById(basketId).orElseThrow(() -> {
             log.error("Basket with id {} not found", basketId);
@@ -77,6 +81,7 @@ public class ShopService {
 
         if (basket.getProducts().contains(product)) {
             basket.removeProduct(product);
+            basketProductRepo.removeByBasketIdAndProductId(basketId, product.getId());
             return basketRepo.save(basket);
         } else {
             log.error("Product not found in basket");

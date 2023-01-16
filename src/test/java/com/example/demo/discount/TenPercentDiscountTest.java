@@ -21,8 +21,8 @@ class TenPercentDiscountTest {
         var cheese = productDb.getProduct("Cheese");
         var steak = productDb.getProduct("Steak");
         List<ReceiptEntry> receiptEntries = new ArrayList<>();
-        receiptEntries.add(new ReceiptEntry(cheese, 1));
-        receiptEntries.add(new ReceiptEntry(steak, 1));
+        receiptEntries.add(new ReceiptEntry(cheese, 1L));
+        receiptEntries.add(new ReceiptEntry(steak, 1L));
         var discounts = new ArrayList<String>();
         var receipt = new Receipt(receiptEntries,discounts);
 
@@ -43,7 +43,7 @@ class TenPercentDiscountTest {
         var productDb = new ProductDb();
         var cheese = productDb.getProduct("Cheese");
         List<ReceiptEntry> receiptEntries = new ArrayList<>();
-        receiptEntries.add(new ReceiptEntry(cheese, 2));
+        receiptEntries.add(new ReceiptEntry(cheese, 2L));
         var discounts = new ArrayList<String>();
         var receipt = new Receipt(receiptEntries,discounts);
         var discount = new TenPercentDiscount();

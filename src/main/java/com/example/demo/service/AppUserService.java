@@ -91,7 +91,7 @@ public class AppUserService {
     }
 
     private AppUser userBuilder(AppUser appUser) {
-        appUser.setBasket(new Basket(appUser.getUsername()));
+        appUser.setBasket(new Basket(new ArrayList<>(),appUser.getUsername()));
         appUser.setRole("ROLE_" + Role.USER);
         appUser.setWallet(new Wallet(new BigDecimal(100), new ArrayList<>(), appUser.getUsername()));
         appUser.setEnable(false);

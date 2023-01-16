@@ -74,19 +74,19 @@ public class AdminPanelControllerTest extends BaseIT {
                                 .balance(new BigDecimal(500))
                                 .owner("filip")
                                 .transactions(new ArrayList<>())
-                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build(),
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket(new ArrayList<>(),"filip")).build(),
                 AppUser.builder().id(2L).username("filip")
                         .password("1234").email("filipduda99@wp.pl").wallet(Wallet.builder()
                                 .balance(new BigDecimal(500))
                                 .owner("filip")
                                 .transactions(new ArrayList<>())
-                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build(),
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket(new ArrayList<>(),"filip")).build(),
                 AppUser.builder().id(3L).username("filip")
                         .password("1234").email("filipduda99@wp.pl").wallet(Wallet.builder()
                                 .balance(new BigDecimal(500))
                                 .owner("filip")
                                 .transactions(new ArrayList<>())
-                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build());
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket(new ArrayList<>(),"filip")).build());
 
         given(adminPanelService.getAllAppUsers()).willReturn(userList);
 
