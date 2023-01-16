@@ -75,7 +75,7 @@ public class AppUserService {
 
     public String confirm(String token) {
         VerificationToken verificationToken = verificationTokenRepo.findByValue(token).orElseThrow(() -> new UsernameNotFoundException("Token not found"));
-        AppUser user = verificationToken.getAppUser();
+        AppUser user = verificationToken.getUser();
         user.setEnable(true);
         userRepo.save(user);
         return "Account confirmed";

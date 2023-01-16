@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @Data
 @Entity
-@Table(name = "transactions")
+@Table(name = "user_transactions")
 public class AppTransaction {
 
     @Id

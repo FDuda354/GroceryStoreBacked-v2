@@ -23,7 +23,7 @@ public class Basket {
 
     @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "purchased_products_baskets",
-            joinColumns = @JoinColumn(name = "basked_id"),
+            joinColumns = @JoinColumn(name = "basket_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "purchased_products")
     private List<Product> products = new LinkedList<>();

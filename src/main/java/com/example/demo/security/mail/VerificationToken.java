@@ -23,10 +23,10 @@ public class VerificationToken {
     private String value;
 
     @OneToOne
-    private AppUser appUser;
+    private AppUser user;
 
     public VerificationToken(String value, AppUser appUser) {
         this.value = value;
-        this.appUser = appUser;
+        this.user = appUser;
     }
 }

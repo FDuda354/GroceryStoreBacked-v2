@@ -30,7 +30,7 @@ public class DbInit {
 
     private final TransactionRepo transRepo;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void fillDB() throws Exception {
 
         List<Product> products;

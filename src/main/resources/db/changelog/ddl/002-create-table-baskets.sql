@@ -1,0 +1,7 @@
+--liquibase formatted sql
+--changeset FDuda:2
+
+CREATE TABLE baskets (
+    id BIGSERIAL PRIMARY KEY,
+    owner VARCHAR(255) NOT NULL
+);
