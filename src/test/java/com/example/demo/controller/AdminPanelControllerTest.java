@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.BaseIT;
+import com.example.demo.model.basket.Basket;
+import com.example.demo.model.payments.Wallet;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.product.ProductType;
 import com.example.demo.model.user.AppUser;
@@ -17,11 +20,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,10 +35,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+
 @AutoConfigureMockMvc
-@WithMockUser
-public class AdminPanelControllerTest {
+public class AdminPanelControllerTest extends BaseIT {
 
     private final MockMvc mockMvc;
     private final ObjectMapper mapper;
@@ -66,15 +70,28 @@ public class AdminPanelControllerTest {
     public void shouldGetAllUsers() throws Exception {
         //Given
         var userList = List.of(AppUser.builder().id(1L).username("filip")
-                        .password("1234").email("filipduda99@wp.pl").role(Role.ADMIN.name()).build(),
-                AppUser.builder().id(2L).username("jan")
-                        .password("1234").email("janKowalski@wp.pl").role(Role.ADMIN.name()).build(),
-                AppUser.builder().id(3L).username("kasia")
-                        .password("1234").email("kasia12@wp.pl").role(Role.USER.name()).build());
+                        .password("1234").email("filipduda99@wp.pl").wallet(Wallet.builder()
+                                .balance(new BigDecimal(500))
+                                .owner("filip")
+                                .transactions(new ArrayList<>())
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build(),
+                AppUser.builder().id(2L).username("filip")
+                        .password("1234").email("filipduda99@wp.pl").wallet(Wallet.builder()
+                                .balance(new BigDecimal(500))
+                                .owner("filip")
+                                .transactions(new ArrayList<>())
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build(),
+                AppUser.builder().id(3L).username("filip")
+                        .password("1234").email("filipduda99@wp.pl").wallet(Wallet.builder()
+                                .balance(new BigDecimal(500))
+                                .owner("filip")
+                                .transactions(new ArrayList<>())
+                                .build()).role("ROLE_"+Role.ADMIN).basket(new Basket("filip")).build());
+
         given(adminPanelService.getAllAppUsers()).willReturn(userList);
 
         //When
-        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("/admin/all")
+        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
