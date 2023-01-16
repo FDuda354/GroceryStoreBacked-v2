@@ -62,7 +62,7 @@ public class AppUserService {
 
             String url = "http://" + request.getServerName() + ":" + request.getServerPort() + "/api/users/confirm?token=" + token;
 
-            mailService.sendMail(user.getEmail(), "Confirm your account", url, false);
+            //mailService.sendMail(user.getEmail(), "Confirm your account", url, false);
 
             return userRepo.save(userBuilder(user));
 

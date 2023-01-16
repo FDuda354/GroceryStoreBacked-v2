@@ -2,6 +2,6 @@
 --changeset FDuda:2
 
 CREATE TABLE baskets (
-    id BIGSERIAL PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     owner VARCHAR(255) NOT NULL
 );

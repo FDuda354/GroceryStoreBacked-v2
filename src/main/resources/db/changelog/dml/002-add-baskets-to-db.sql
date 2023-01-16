@@ -16,11 +16,4 @@ VALUES
 (10,'krzysztof'),
 (11,'marcin'),
 (12,'ewa'),
-(13,'adam'),
-(14,'joanna'),
-(15,'michal'),
-(16,'ola'),
-(17,'lukasz'),
-(18,'daria'),
-(19,'jakub'),
-(20,'pawel');
+(13,'pawel');

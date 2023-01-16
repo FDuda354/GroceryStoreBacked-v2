@@ -2,9 +2,9 @@
 --changeset FDuda:5
 
 CREATE TABLE user_transactions (
-    id BIGSERIAL PRIMARY KEY,
-    amount NUMERIC(10,2) NOT NULL,
+    id BIGINT PRIMARY KEY,
+    amount DECIMAL(10,2) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    wallet_id BIGSERIAL REFERENCES wallets(id),
+    wallet_id BIGINT REFERENCES wallets(id),
     direction VARCHAR(255) NOT NULL
 );

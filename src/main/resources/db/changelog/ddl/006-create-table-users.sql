@@ -7,7 +7,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     is_enable BOOLEAN NOT NULL,
-    basket_id BIGSERIAL REFERENCES baskets(id),
-    wallet_id BIGSERIAL REFERENCES wallets(id),
+    basket_id BIGINT REFERENCES baskets(id),
+    wallet_id BIGINT REFERENCES wallets(id),
     role VARCHAR(255) NOT NULL
 );

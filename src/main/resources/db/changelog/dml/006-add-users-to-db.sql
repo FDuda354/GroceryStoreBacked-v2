@@ -15,11 +15,4 @@ values
 (10, 'marcin', '$2a$10$BmwQkhcnqAPmpd3iozLoUe4MXQPStu44/L6hkBfovxOmXeUvkiKki', 'marcin@gmail.com', true, 10, 10, 'ROLE_USER'),
 (11, 'ewa', '$2a$10$2ICJzgcF13qHapDlCKln/ue8zDWejCpUudqJrbzXQH/9CC5n1r4XS', 'ewa@gmail.com', true, 11, 11, 'ROLE_USER'),
 (12, 'adam', '$2a$10$QgTgAXGd20figeJcDurxjORQfuOJRo/jkefkbmISuJNQ0ZlPwr6bu', 'adam@gmail.com', true, 12, 12, 'ROLE_USER'),
-(13, 'joanna', '$2a$10$cG2PsUu/h5GBJdTEhCf3qeEqM24ZMyMdZPgocZbFCFH1M1UJSn.cu', 'joanna@gmail.com', true, 13, 13, 'ROLE_USER'),
-(14, 'michal', '$2a$10$1oQXGXEsNX9HudYhfuOY4Oyi/DjaF2Nw/5gdRnsmA5yLpwL9Jo30O', 'michal@gmail.com', true, 14, 14, 'ROLE_USER'),
-(15, 'ola', '$2a$10$r2tqppVzZXxOo80C0U6qF.tfmgqtT3c6M5hEZE7PTgW1ZRdwNywya', 'ola@gmail.com', true, 15, 15, 'ROLE_USER'),
-(16, 'lukasz', '$2a$10$nyv1fZPNKXoKgFYyBgkSa.BwsB83GFDoUg4UgGLLcLpJbnh87VAwe', 'lukasz@gmail.com', true, 16, 16, 'ROLE_USER'),
-(17, 'daria', '$2a$10$WnlnkcgQlNmAIMBo6v5ZEOIY1tJaqUFczqCkQj8mkNAFzVtmwbis6', 'daria@gmail.com', true, 17, 17, 'ROLE_USER'),
-(18, 'jakub', '$2a$10$GmLLD40kI3Hh9ce5FkxwAukepV0bOOL7JoepkJtfLC1pZkNlFmskC', 'jakub@gmail.com', true, 18, 18, 'ROLE_USER'),
-(19, 'patryk', '$2a$10$ofVo/4IhybMbGVfn1b/DJuv3Ejt.Xj6geTBXk930CNf1rv.3eC0q2', 'patryk@gmail.com', true, 19, 19, 'ROLE_USER'),
-(20, 'pawel', '$2a$10$m5WMd7qKOWqVCEZpg6tpGOD3l1PheqAvvBEbLKMggvMzHhyG60gVy', 'pawel@gmail.com', true, 20, 20, 'ROLE_ADMIN');
+(13, 'pawel', '$2a$10$cG2PsUu/h5GBJdTEhCf3qeEqM24ZMyMdZPgocZbFCFH1M1UJSn.cu', 'pawel@gmail.com', true, 13, 13, 'ROLE_ADMIN');

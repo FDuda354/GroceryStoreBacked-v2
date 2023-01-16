@@ -3,3 +3,5 @@ databaseChangeLog:
       path: db/changelog/ddl/*.sql
   - includeAll:
       path:  db/changelog/dml/*.sql
+  - include:
+      file:  db/changelog/001-create-hibernate_sequence-dev.sql

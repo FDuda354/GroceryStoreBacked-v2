@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.GenerationType.AUTO;
 
 
 @Setter
@@ -31,7 +30,7 @@ import static javax.persistence.GenerationType.AUTO;
 @Table(name = "users")
 public class AppUser implements UserDetails {
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NonNull
     private String username;

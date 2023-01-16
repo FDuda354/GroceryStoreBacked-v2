@@ -18,7 +18,7 @@ import static javax.persistence.FetchType.EAGER;
 public class Basket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToMany(fetch = EAGER, cascade = CascadeType.ALL)

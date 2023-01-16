@@ -1,3 +1,7 @@
 databaseChangeLog:
   - includeAll:
       path: db/changelog/ddl/*.sql
+  - include:
+      file:  db/changelog/002-create-hibernate_sequence-prod.sql
+  - include:
+      file:  db/changelog/dml/001-add-products-to-db.sql

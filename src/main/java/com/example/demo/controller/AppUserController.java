@@ -44,6 +44,7 @@ public class AppUserController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @GetMapping("/confirm")
     public ResponseEntity<String> confirm(@RequestParam String token)  {
         return ResponseEntity.ok(userService.confirm(token));
