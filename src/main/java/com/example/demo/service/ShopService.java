@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.BasketNotFoundInDBException;
-import com.example.demo.exception.OutOfMoneyException;
-import com.example.demo.exception.ProductNotFoundInBasketException;
-import com.example.demo.exception.ProductNotFoundInDBException;
+import com.example.demo.exception.*;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.payments.discount.Discount;
 import com.example.demo.model.product.Product;
@@ -15,6 +12,7 @@ import com.example.demo.repository.BasketRepo;
 import com.example.demo.repository.ProductRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,10 @@ public class ShopService {
             appUserService.payForProducts(receipt, user.getWallet(), basket);
             basketProductRepo.removeByBasketId(basket.getId());
             return receipt;
-        } catch (OutOfMoneyException e) {
+        } catch (UserNotFoundInDBException e) {
+            log.error("User with id: " + userId + " not found");
+            throw new UserNotFoundInDBException("User not found");
+        }catch (OutOfMoneyException e) {
             log.error("User don't have enough money to pay for products");
             throw new OutOfMoneyException("User don't have enough money to pay for products");
         } catch (Exception e) {

@@ -40,6 +40,17 @@ public class AdminPanelController {
         }
     }
 
+    @PutMapping("/product")
+    public ResponseEntity<Product> updateProductInDB(@RequestBody Product product) {
+        try {
+            return ResponseEntity.ok().body(adminPanelService.updateProductInDB(product));
+        } catch (ProductNotFoundInDBException e) {
+            return ResponseEntity.status(404).build();
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/reset")
     public void reset() {
         try {

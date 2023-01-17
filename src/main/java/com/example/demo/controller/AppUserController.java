@@ -50,7 +50,7 @@ public class AppUserController {
         return ResponseEntity.ok(userService.confirm(token));
     }
     @PutMapping
-    public ResponseEntity<AppUser> updateAppUser(@RequestBody AppUser appUser) {
+    public ResponseEntity<AppUser> updateAppUser(@RequestBody AppUser appUser) throws Exception {
         try {
             return ResponseEntity.status(302).body(userService.updateAppUser(appUser));
         } catch (UserNotFoundInDBException e) {

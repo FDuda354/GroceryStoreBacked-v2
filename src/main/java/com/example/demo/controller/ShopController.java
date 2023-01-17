@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.exception.BasketNotFoundInDBException;
-import com.example.demo.exception.ProductNotFoundInBasketException;
+import com.example.demo.exception.*;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.recipt.Receipt;
 import com.example.demo.service.ShopService;
@@ -23,8 +22,10 @@ public class ShopController {
     public ResponseEntity<Receipt> getReceipt(@RequestParam(name = "userId") Long userId) {
         try {
             return ResponseEntity.ok().body(shopService.getReceipt(userId));
-        } catch (BasketNotFoundInDBException e) {
+        } catch (UserNotFoundInDBException e) {
             return ResponseEntity.notFound().build();
+        }catch (OutOfMoneyException e) {
+            return ResponseEntity.status(402).build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -35,19 +36,18 @@ public class ShopController {
         try {
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/shop/product").toUriString());
             return ResponseEntity.created(uri).body(shopService.addProduct(basketId, name));
-        } catch (BasketNotFoundInDBException | ProductNotFoundInBasketException e) {
+        } catch (BasketNotFoundInDBException | ProductNotFoundInDBException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/basket")
+    @DeleteMapping("/basket")
     public ResponseEntity<Basket> removeProduct(@RequestParam(name = "basketId") Long basketId, @RequestParam(name = "productName") String productName) {
         try {
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/shop/basket").toUriString());
-            return ResponseEntity.created(uri).body(shopService.removeProduct(basketId, productName));
-        } catch (ProductNotFoundInBasketException e) {
+            return ResponseEntity.ok().body(shopService.removeProduct(basketId, productName));
+        } catch (BasketNotFoundInDBException | ProductNotFoundInBasketException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

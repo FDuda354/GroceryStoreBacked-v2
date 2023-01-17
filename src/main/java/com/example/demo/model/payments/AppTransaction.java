@@ -1,5 +1,6 @@
 package com.example.demo.model.payments;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,8 +22,10 @@ public class AppTransaction {
     private BigDecimal amount;
     @NonNull
     private String description;
-    @ManyToOne
     @NonNull
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    @JsonIgnore
     private Wallet wallet;
     @NonNull
     @Enumerated(EnumType.STRING)

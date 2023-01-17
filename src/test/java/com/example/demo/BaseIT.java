@@ -1,8 +1,6 @@
 package com.example.demo;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -11,7 +9,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
-@WithMockUser
 @ActiveProfiles("test")
 @Testcontainers
 public class BaseIT {
@@ -19,7 +16,7 @@ public class BaseIT {
     @Container
     private static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:14.1")
-            .withDatabaseName("test")
+            .withDatabaseName("grocerystore-dev")
             .withUsername("filip")
             .withPassword("filip1234");
 
@@ -29,10 +26,5 @@ public class BaseIT {
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
     }
-//    @DynamicPropertySource
-//    public static void setProperties() {
-//        System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
-//        System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
-//        System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
-//    }
+
 }

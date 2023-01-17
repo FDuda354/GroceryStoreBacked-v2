@@ -22,7 +22,7 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "basket", cascade = CascadeType.PERSIST, fetch = EAGER)
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.PERSIST, fetch = EAGER, orphanRemoval = true)
     @NonNull
     private List<BasketProduct> basketProducts;
 

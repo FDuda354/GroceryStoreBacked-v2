@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,7 +24,8 @@ public class Wallet {
     private Long id;
     @NonNull
     private BigDecimal balance;
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.PERSIST, fetch = LAZY)
     @NonNull
     private List<AppTransaction> transactions;
     @NonNull

@@ -10,7 +10,7 @@ VALUES
 (5,1000,'tomasz'),
 (6,1000,'agnieszka'),
 (7,1000,'piotr'),
-(8,1000,'jan'),
+(8,1,'jan'),
 (9,1000,'magda'),
 (10,1000,'krzysztof'),
 (11,1000,'marcin'),

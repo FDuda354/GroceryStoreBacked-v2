@@ -1,61 +1,31 @@
 package com.example.demo.controller;
 
+import com.example.demo.BaseIT;
 import com.example.demo.model.basket.Basket;
-import com.example.demo.model.product.Product;
-import com.example.demo.model.product.ProductType;
 import com.example.demo.model.recipt.Receipt;
-import com.example.demo.model.recipt.ReceiptGenerator;
-import com.example.demo.security.SecurityConfig;
-import com.example.demo.service.AdminPanelService;
-import com.example.demo.service.AppUserService;
-import com.example.demo.service.ShopService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
-public class ShopControllerTest {
+public class ShopControllerTest extends BaseIT {
 
     private final MockMvc mockMvc;
     private final ObjectMapper mapper;
-    @MockBean
-    private ShopService shopService;
 
-    @MockBean
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @MockBean
-    private SecurityFilterChain securityFilterChain;
-    @MockBean
-    private SecurityConfig securityConfig;
-    @MockBean
-    private AdminPanelController adminPanelController;
-    @MockBean
-    private AppUserController appUserController;
-    @MockBean
-    private AdminPanelService adminPanelService;
-    @MockBean
-    private AppUserService appUserService;
 
     @Autowired
     public ShopControllerTest(MockMvc mockMvc, ObjectMapper mapper) {
@@ -63,71 +33,203 @@ public class ShopControllerTest {
         this.mapper = mapper;
     }
 
-    @Test
-    public void shouldGetReceipt() throws Exception {
-        //Given
-        var basket = new Basket();
-        basket.addProduct(new Product(1L,"Apple", ProductType.FRUITS, new BigDecimal(2)));
-        basket.addProduct( new Product(12L,"Bread", ProductType.GRAINS, new BigDecimal(5)));
-        basket.addProduct( new Product(12L,"Bread", ProductType.GRAINS, new BigDecimal(5)));
-        basket.addProduct( new Product(12L,"Bread", ProductType.GRAINS, new BigDecimal(5)));
-        basket.addProduct( new Product(11L,"Steak", ProductType.MEAT, new BigDecimal(50)));
-        basket.addProduct( new Product(12L,"Bread", ProductType.GRAINS, new BigDecimal(5)));
-        var receiptGenerator = new ReceiptGenerator();
-        var receipt = receiptGenerator.generate(basket);
-        given(shopService.getReceipt(any(Long.class))).willReturn(receipt);
 
-        //When
-        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.get("/shop/receipt")
-                        .param("basketId", "1")
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getReceipt_withValidUserId_thenReturn200() throws Exception {
+        // When
+        var result = mockMvc.perform(MockMvcRequestBuilders.get("/api/shop/receipt")
+                        .param("userId", String.valueOf(13L))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString(), Receipt.class);
+                .andReturn().getResponse().getContentAsString();
+        var receipt = mapper.readValue(result, Receipt.class);
 
-
-
-        //Then
-        assertNotNull(result);
-        assertEquals(receipt.getTotalPrice(), result.getTotalPrice());
-        assertEquals(receipt.getEntries().size(), result.getEntries().size());
-        assertEquals(receipt.getEntries().get(0).product().getName(), result.getEntries().get(0).product().getName());
-        assertEquals(receipt.getEntries().get(0).product().getPrice(), result.getEntries().get(0).product().getPrice());
-        assertEquals(receipt.getEntries().get(0).product().getType(), result.getEntries().get(0).product().getType());
-        assertEquals(receipt.getEntries().get(0).quantity(), result.getEntries().get(0).quantity());
-        assertEquals(receipt.getEntries().get(0).totalPrice(), result.getEntries().get(0).totalPrice());
-
-
+        // Then
+        assertNotNull(receipt);
+        assertEquals(new BigDecimal("638.62200"), receipt.getTotalPrice());
+        assertEquals("TenPercentDiscount", receipt.getDiscounts().get(0));
+        assertEquals("FifteenPercentDiscount", receipt.getDiscounts().get(1));
+        assertEquals("Apple", receipt.getEntries().get(0).product().getName());
+        assertEquals(9, receipt.getEntries().get(0).quantity());
+        assertEquals(LocalDate.now(), receipt.getDate());
     }
 
     @Test
-    public void shouldAddProduct() throws Exception {
-        //Given
-        var basket = new Basket(2L,new ArrayList<>(),"user");
-        var product = new Product(1L,"Apple", ProductType.FRUITS, new BigDecimal(2));
-        basket.addProduct(product);
-        given(shopService.addProduct(any(Long.class),any(String.class))).willReturn(basket);
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getReceipt_withInvalidUserId_thenReturn404() throws Exception {
 
-        //When
-        var result = mapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/shop/product")
-                        .param("basketId", "2")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/shop/receipt")
+                        .param("userId", String.valueOf(110L))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void getReceipt_withNoMoney_thenReturn402() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/shop/receipt")
+                        .param("userId", String.valueOf(8L))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isPaymentRequired());
+    }
+
+    @Test
+    public void getReceipt_withNoLogin_thenReturn403() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/shop/receipt")
+                        .param("userId", String.valueOf(1L))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void addProduct_withValidBasketIdAndName_thenReturn200() throws Exception {
+
+        // When
+        var result = mockMvc.perform(MockMvcRequestBuilders.post("/api/shop/product")
+                        .param("basketId", String.valueOf(2L))
                         .param("name", "Apple")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(product))
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString(), Basket.class);
+                .andReturn().getResponse().getContentAsString();
+        var basket = mapper.readValue(result, Basket.class);
 
-        //Then
-        assertNotNull(result);
-        assertEquals(product.getId(), result.getProducts().get(0).getId());
-        assertEquals(product.getName(), result.getProducts().get(0).getName());
-        assertEquals(product.getPrice(), result.getProducts().get(0).getPrice());
-        assertEquals(product.getType(), result.getProducts().get(0).getType());
+        // Then
+        assertNotNull(basket);
+        assertEquals(new BigDecimal("2.00"), basket.getProducts().get(0).getPrice());
+        assertEquals("Apple", basket.getProducts().get(0).getName());
+        assertEquals(1, basket.getBasketProducts().get(0).getQuantity());
 
     }
 
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void addProduct_withInvalidBasketId_thenReturn404() throws Exception {
 
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/shop/product")
+                        .param("basketId", String.valueOf(110L))
+                        .param("name", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void addProduct_withInvalidName_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/shop/product")
+                        .param("basketId", String.valueOf(2L))
+                        .param("name", "Apple2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void addProduct_withNoLogin_thenReturn403() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/shop/product")
+                        .param("basketId", String.valueOf(2L))
+                        .param("name", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void removeProduct_withValidBasketIdAndName_thenReturn200() throws Exception {
+
+        // When
+        var result = mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(1L))
+                        .param("productName", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        var basket = mapper.readValue(result, Basket.class);
+
+        // Then
+        assertNotNull(basket);
+        assertEquals(12, basket.getBasketProducts().size());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void removeProduct_withInvalidName_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(2L))
+                        .param("productName", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+    }
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void removeProduct_withInvalidBasketId_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(110L))
+                        .param("productName", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void removeProduct_withInvalidNameAndBasketId_thenReturn404() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(200L))
+                        .param("productName", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    public void removeProduct_withInvalidName_thenReturn400() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(2L))
+                        .param("productName", "Apple2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void removeProduct_withNoLogin_thenReturn403() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/shop/basket")
+                        .param("basketId", String.valueOf(2L))
+                        .param("productName", "Apple")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isForbidden());
+    }
 }

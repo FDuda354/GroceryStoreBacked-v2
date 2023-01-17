@@ -43,7 +43,7 @@ public class AppUser implements UserDetails {
     @JoinColumn(name = "basket_id")
     private Basket basket;
 
-    @OneToOne(fetch = EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "wallet_id")
     private Wallet wallet;
     private String role;
@@ -110,4 +110,5 @@ public class AppUser implements UserDetails {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }

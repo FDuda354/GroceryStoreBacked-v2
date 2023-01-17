@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.demo.exception.OutOfMoneyException;
 import com.example.demo.exception.UserAlreadyExistException;
+import com.example.demo.exception.UserNotFoundInDBException;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.payments.Wallet;
 import com.example.demo.model.recipt.Receipt;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -74,18 +75,18 @@ public class AppUserService {
     }
 
     public String confirm(String token) {
-        VerificationToken verificationToken = verificationTokenRepo.findByValue(token).orElseThrow(() -> new UsernameNotFoundException("Token not found"));
+        VerificationToken verificationToken = verificationTokenRepo.findByValue(token).orElseThrow(() -> new UserNotFoundInDBException("Token not found"));
         AppUser user = verificationToken.getUser();
         user.setEnable(true);
         userRepo.save(user);
         return "Account confirmed";
     }
 
-    public AppUser getAppUserById(Long userId) throws UsernameNotFoundException {
+    public AppUser getAppUserById(Long userId) throws UserNotFoundInDBException {
 
         return userRepo.findById(userId).orElseThrow(() -> {
             log.error("User with id {} not found", userId);
-            throw new UsernameNotFoundException("User with id " + userId + " not found");
+            throw new UserNotFoundInDBException("User with id " + userId + " not found");
         });
 
     }
@@ -103,7 +104,7 @@ public class AppUserService {
 
         var user = userRepo.findById(updatedUser.getId()).orElseThrow(() -> {
             log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
+            throw new UserNotFoundInDBException("User not found in the database");
         });
 
         if (userRepo.findByUsername(updatedUser.getUsername()).filter(u -> !u.getId().equals(updatedUser.getId())).isPresent()) {
@@ -111,11 +112,10 @@ public class AppUserService {
             throw new UserAlreadyExistException("User already exists");
         }
         try {
-            user.setUsername(updatedUser.getUsername());
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            user.setEmail(updatedUser.getEmail());
-            user.setBasket(updatedUser.getBasket());
-            user.getBasket().setOwner(updatedUser.getUsername());
+            user.setUsername(Optional.ofNullable(updatedUser.getUsername()).orElse(user.getUsername()));
+            user.setPassword(Optional.ofNullable(updatedUser.getPassword()).map(passwordEncoder::encode).orElse(user.getPassword()));
+            user.setEmail(Optional.ofNullable(updatedUser.getEmail()).orElse(user.getEmail()));
+            user.setRole(Optional.ofNullable(updatedUser.getRole()).orElse(user.getRole()));
             return userRepo.save(user);
         } catch (Exception e) {
             log.error("Error while updating user: " + e.getMessage());
@@ -126,7 +126,7 @@ public class AppUserService {
 
     public AuthResponse getJwt(AuthRequest authRequest) {
         AppUser appUser = userRepo.findByUsername(authRequest.username())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found in the database"));
+                .orElseThrow(() -> new UserNotFoundInDBException("User not found in the database"));
         if (!passwordEncoder.matches(authRequest.password(), appUser.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
@@ -158,7 +158,7 @@ public class AppUserService {
     public void deleteAppUser(Long id) throws Exception {
         AppUser appUser = userRepo.findById(id).orElseThrow(() -> {
             log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
+            throw new UserNotFoundInDBException("User not found in the database");
         });
         try {
             appUser.getBasket().removeAllProducts();

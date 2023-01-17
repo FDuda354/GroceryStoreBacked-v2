@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.configuration.DbInit;
 import com.example.demo.exception.ProductAlreadyExistException;
 import com.example.demo.exception.ProductNotFoundInDBException;
+import com.example.demo.exception.UserNotFoundInDBException;
 import com.example.demo.model.product.Product;
 import com.example.demo.model.user.AppUser;
 import com.example.demo.repository.ProductRepo;
@@ -63,6 +64,11 @@ public class AdminPanelService {
             throw new ProductNotFoundInDBException("Product not found in database");
         }
         try {
+            List<AppUser> users = userRepo.findAllUsersByProducts(product.get().getName());
+            users.forEach(user -> {
+                user.getBasket().getBasketProducts().removeIf(basketProduct -> basketProduct.getProduct().getName().equals(product.get().getName()));
+            });
+            userRepo.saveAll(users);
             productRepo.deleteById(product.get().getId());
         } catch (Exception e) {
             log.error("Error while removing product from database: " + e.getMessage());
@@ -75,7 +81,7 @@ public class AdminPanelService {
         Optional<AppUser> appUser = userRepo.findById(id);
         if (appUser.isEmpty()) {
             log.error("User not found in database");
-            throw new UsernameNotFoundException("User not found in database");
+            throw new UserNotFoundInDBException("User not found in database");
         }
         try {
             userRepo.deleteById(id);
@@ -94,5 +100,18 @@ public class AdminPanelService {
             throw new Exception("Error while getting all users from database: " + e.getMessage());
         }
 
+    }
+
+    public Product updateProductInDB(Product product) throws Exception {
+
+            Product productFromDB = productRepo.findByName(product.getName()).orElseThrow(() -> new ProductNotFoundInDBException("Product not found in database"));
+            productFromDB.setPrice(product.getPrice());
+            productFromDB.setName(product.getName());
+            productFromDB.setType(product.getType());
+        try { return productRepo.save(productFromDB);
+        } catch (Exception e) {
+            log.error("Error while updating product in database: " + e.getMessage());
+            throw new Exception("Error while updating product in database: " + e.getMessage());
+        }
     }
 }

@@ -3,6 +3,10 @@ package com.example.demo.model.basket;
 import com.example.demo.model.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 
 import javax.persistence.*;
 
@@ -20,6 +24,8 @@ public class BasketProduct {
     private Long id;
     @NonNull
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "basket_id")
     @JsonIgnore
     private Basket basket;
